@@ -6,8 +6,6 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 var connectionString = builder.Configuration.GetConnectionString("OutofOfficeDBConnectionString");
 builder.Services.AddDbContext<OutofOfficeDBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -17,8 +15,8 @@ builder.Services.AddIdentityApiEndpoints<LoginUser>()
                 .AddEntityFrameworkStores<OutofOfficeDBContext>();
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -43,7 +41,6 @@ app.MapGet("/pingauth", (ClaimsPrincipal user) =>
     return Results.Json(new { Email = email }); ; // return the email as a plain text response
 }).RequireAuthorization();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
