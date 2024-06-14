@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using OutofOfficeAPI.Data;
+using Microsoft.AspNetCore.Identity;
 using OutofOfficeAPI.Models;
+using OutofOfficeAPI.Data;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +26,23 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+app.MapIdentityApi<LoginUser>();
+
+app.MapPost("/logout", async (SignInManager<LoginUser> signInManager) =>
+{
+
+    await signInManager.SignOutAsync();
+    return Results.Ok();
+
+}).RequireAuthorization();
+
+
+app.MapGet("/pingauth", (ClaimsPrincipal user) =>
+{
+    var email = user.FindFirstValue(ClaimTypes.Email); // get the user's email from the claim
+    return Results.Json(new { Email = email }); ; // return the email as a plain text response
+}).RequireAuthorization();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -34,8 +53,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
-
-app.MapIdentityApi<LoginUser>();
 
 app.MapControllers();
 
