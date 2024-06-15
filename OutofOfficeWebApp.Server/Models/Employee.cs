@@ -5,27 +5,19 @@ namespace OutofOfficeAPI.Models
 {
     public class Employee
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required]
         public string FullName { get; set; }
 
-        [Required]
         public SubdivisionType SubdivisionType { get; set; }
 
-        [Required]
         public PositionType PositionType { get; set; }
 
-        [Required]
         public RequestStatusType StatusType { get; set; }
 
-        [Required]
-        [ForeignKey("Employee")]
         //INT FK Single choice from the “Employee” table with “HR Manager” position
         public int PeoplePartner { get; set; }
 
-        [Required]
         public float OutofOfficeBalance { get; set; }
 
         public string? Photo { get; set; } //type - files

@@ -6,18 +6,12 @@ namespace OutofOfficeAPI.Models
 {
     public class ApprovalRequest
     {
-        [Key]
         public int Id { get; set; }
 
-        [Required]
-        [ForeignKey("Employee")]
         public int Approver { get; set; }
 
-        [Required]
-        [ForeignKey("LeaveRequest")]
-        public int LeaveRequest { get; set; }
+        public int LeaveRequestId { get; set; }
 
-        [Required]
         public RequestStatusType RequestStatusType { get; set; }
         //Single choice from the “Status” list. Is updated upon clicking Approve/Reject
         //Request.The default value is New.
@@ -25,5 +19,10 @@ namespace OutofOfficeAPI.Models
         // drop all enums to separate folder
 
         public string? Comment { get; set; }
+
+        [ForeignKey("Approver")]
+        public Employee Employee { get; set; }
+
+        public LeaveRequest LeaveRequest { get; set; }
     }
 }
