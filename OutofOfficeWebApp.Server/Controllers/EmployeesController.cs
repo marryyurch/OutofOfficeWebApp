@@ -68,6 +68,8 @@ namespace OutofOfficeAPI.Controllers
         {
             var employeesQuery = _outofOfficeDbContext.Employees;
 
+            await employeesQuery.ToListAsync();
+
             var employees = filterItem.ToLower() switch
             {
                 "name" => employeesQuery.Where(e => e.FullName == itemContent),
