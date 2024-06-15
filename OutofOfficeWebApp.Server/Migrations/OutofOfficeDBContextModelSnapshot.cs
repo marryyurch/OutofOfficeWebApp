@@ -168,13 +168,17 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.Property<string>("Comment")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("LeaveRequest")
+                    b.Property<int>("LeaveRequestId")
                         .HasColumnType("int");
 
                     b.Property<int>("RequestStatusType")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Approver");
+
+                    b.HasIndex("LeaveRequestId");
 
                     b.ToTable("ApprovalRequests");
                 });
@@ -241,6 +245,8 @@ namespace OutofOfficeWebApp.Server.Migrations
                         .HasColumnType("date");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("LeaveRequests");
                 });
@@ -337,6 +343,8 @@ namespace OutofOfficeWebApp.Server.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProjectManager");
+
                     b.ToTable("Projects");
                 });
 
@@ -389,6 +397,47 @@ namespace OutofOfficeWebApp.Server.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("OutofOfficeAPI.Models.ApprovalRequest", b =>
+                {
+                    b.HasOne("OutofOfficeAPI.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("Approver")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OutofOfficeAPI.Models.LeaveRequest", "LeaveRequest")
+                        .WithMany()
+                        .HasForeignKey("LeaveRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("LeaveRequest");
+                });
+
+            modelBuilder.Entity("OutofOfficeAPI.Models.LeaveRequest", b =>
+                {
+                    b.HasOne("OutofOfficeAPI.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("OutofOfficeAPI.Models.Project", b =>
+                {
+                    b.HasOne("OutofOfficeAPI.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("ProjectManager")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

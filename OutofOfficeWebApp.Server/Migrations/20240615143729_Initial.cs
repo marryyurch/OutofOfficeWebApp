@@ -16,24 +16,6 @@ namespace OutofOfficeWebApp.Server.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ApprovalRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Approver = table.Column<int>(type: "int", nullable: false),
-                    LeaveRequest = table.Column<int>(type: "int", nullable: false),
-                    RequestStatusType = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ApprovalRequests", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -106,46 +88,6 @@ namespace OutofOfficeWebApp.Server.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Employees", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "LeaveRequests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    EmployeeId = table.Column<int>(type: "int", nullable: false),
-                    AbsenceReasonType = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    Comment = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    RequestStatusType = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_LeaveRequests", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "Projects",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ProjectType = table.Column<int>(type: "int", nullable: false),
-                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    ProjectManager = table.Column<int>(type: "int", nullable: false),
-                    Comment = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    StatusType = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Projects", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -276,6 +218,98 @@ namespace OutofOfficeWebApp.Server.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "LeaveRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    EmployeeId = table.Column<int>(type: "int", nullable: false),
+                    AbsenceReasonType = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    Comment = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    RequestStatusType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LeaveRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_LeaveRequests_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Projects",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ProjectType = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndDate = table.Column<DateOnly>(type: "date", nullable: false),
+                    ProjectManager = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    StatusType = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Projects", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Projects_Employees_ProjectManager",
+                        column: x => x.ProjectManager,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "ApprovalRequests",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Approver = table.Column<int>(type: "int", nullable: false),
+                    LeaveRequestId = table.Column<int>(type: "int", nullable: false),
+                    RequestStatusType = table.Column<int>(type: "int", nullable: false),
+                    Comment = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ApprovalRequests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ApprovalRequests_Employees_Approver",
+                        column: x => x.Approver,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ApprovalRequests_LeaveRequests_LeaveRequestId",
+                        column: x => x.LeaveRequestId,
+                        principalTable: "LeaveRequests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApprovalRequests_Approver",
+                table: "ApprovalRequests",
+                column: "Approver");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ApprovalRequests_LeaveRequestId",
+                table: "ApprovalRequests",
+                column: "LeaveRequestId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -312,6 +346,16 @@ namespace OutofOfficeWebApp.Server.Migrations
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LeaveRequests_EmployeeId",
+                table: "LeaveRequests",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Projects_ProjectManager",
+                table: "Projects",
+                column: "ProjectManager");
         }
 
         /// <inheritdoc />
@@ -336,19 +380,19 @@ namespace OutofOfficeWebApp.Server.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Employees");
+                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "LeaveRequests");
-
-            migrationBuilder.DropTable(
-                name: "Projects");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Employees");
         }
     }
 }
