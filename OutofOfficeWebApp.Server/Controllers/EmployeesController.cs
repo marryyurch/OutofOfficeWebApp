@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OutofOfficeAPI.Data;
 using OutofOfficeAPI.Models;
+using OutofOfficeWebApp.Server.Models;
 using System.Linq.Expressions;
 
 namespace OutofOfficeAPI.Controllers
@@ -90,6 +91,23 @@ namespace OutofOfficeAPI.Controllers
             employeesQuery.Remove(employeesQuery.Where(e => e.Id == employee.Id).First());
 
             employeesQuery.Add(employee);
+
+            await _outofOfficeDbContext.SaveChangesAsync();
+
+            return Ok("Done");
+        }
+
+        [HttpPost("add-employee-to-progect")]
+        public async Task<IActionResult> AddEmplToProject(int employeeId, int projectId)
+        {
+            var member = new ProjectMember()
+            {
+                Id = _outofOfficeDbContext.ProjectMembers.Count() + 1,
+                EmployeeId = employeeId,
+                ProjectId = projectId
+            };
+
+            _outofOfficeDbContext.ProjectMembers.Add(member);
 
             await _outofOfficeDbContext.SaveChangesAsync();
 
