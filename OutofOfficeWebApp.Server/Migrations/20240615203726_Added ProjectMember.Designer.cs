@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OutofOfficeAPI.Data;
 
@@ -11,9 +12,11 @@ using OutofOfficeAPI.Data;
 namespace OutofOfficeWebApp.Server.Migrations
 {
     [DbContext(typeof(OutofOfficeDBContext))]
-    partial class OutofOfficeDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240615203726_Added ProjectMember")]
+    partial class AddedProjectMember
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
