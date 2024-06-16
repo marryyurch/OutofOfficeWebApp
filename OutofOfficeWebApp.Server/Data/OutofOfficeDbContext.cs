@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using OutofOfficeAPI.Models;
 using OutofOfficeWebApp.Server.Models;
 
-namespace OutofOfficeAPI.Data
+namespace OutofOfficeWebApp.Server.Data
 {
-    public class OutofOfficeDBContext : IdentityDbContext<LoginUser>
+    public class OutofOfficeDBContext : IdentityDbContext<LoginIdentityUser>
     {
         public OutofOfficeDBContext(DbContextOptions options) : base(options) { }
 
@@ -14,6 +13,7 @@ namespace OutofOfficeAPI.Data
         public DbSet<ApprovalRequest> ApprovalRequests { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<ProjectMember> ProjectMembers { get; set; }
+        public DbSet<SoftUser> SoftUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
