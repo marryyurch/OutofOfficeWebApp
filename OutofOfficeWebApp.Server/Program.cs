@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using OutofOfficeAPI.Models;
-using OutofOfficeAPI.Data;
+using OutofOfficeWebApp.Server.Models;
+using OutofOfficeWebApp.Server.Data;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +11,7 @@ builder.Services.AddDbContext<OutofOfficeDBContext>(options => options.UseMySql(
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddIdentityApiEndpoints<LoginUser>()
+builder.Services.AddIdentityApiEndpoints<LoginIdentityUser>()
                 .AddEntityFrameworkStores<OutofOfficeDBContext>();
 
 builder.Services.AddControllers();
@@ -24,22 +24,22 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.MapIdentityApi<LoginUser>();
+app.MapIdentityApi<LoginIdentityUser>();
 
-app.MapPost("/logout", async (SignInManager<LoginUser> signInManager) =>
+app.MapPost("/logout", async (SignInManager<LoginIdentityUser> signInManager) =>
 {
 
     await signInManager.SignOutAsync();
     return Results.Ok();
 
-}).RequireAuthorization();
+});//.RequireAuthorization();
 
 
 app.MapGet("/pingauth", (ClaimsPrincipal user) =>
 {
     var email = user.FindFirstValue(ClaimTypes.Email); // get the user's email from the claim
     return Results.Json(new { Email = email }); ; // return the email as a plain text response
-}).RequireAuthorization();
+});//.RequireAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
