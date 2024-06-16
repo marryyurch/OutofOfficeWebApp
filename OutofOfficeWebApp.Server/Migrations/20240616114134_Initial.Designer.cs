@@ -5,15 +5,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using OutofOfficeAPI.Data;
+using OutofOfficeWebApp.Server.Data;
 
 #nullable disable
 
 namespace OutofOfficeWebApp.Server.Migrations
 {
     [DbContext(typeof(OutofOfficeDBContext))]
-    [Migration("20240615203726_Added ProjectMember")]
-    partial class AddedProjectMember
+    [Migration("20240616114134_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -157,7 +157,7 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.ApprovalRequest", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.ApprovalRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -186,7 +186,7 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.ToTable("ApprovalRequests");
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.Employee", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.Employee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -221,7 +221,7 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.ToTable("Employees");
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.LeaveRequest", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.LeaveRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -254,7 +254,7 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.ToTable("LeaveRequests");
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.LoginUser", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.LoginIdentityUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -318,7 +318,7 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.Project", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -374,6 +374,32 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.ToTable("ProjectMembers");
                 });
 
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.SoftUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.ToTable("SoftUsers");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -385,7 +411,7 @@ namespace OutofOfficeWebApp.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("OutofOfficeAPI.Models.LoginUser", null)
+                    b.HasOne("OutofOfficeWebApp.Server.Models.LoginIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -394,7 +420,7 @@ namespace OutofOfficeWebApp.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("OutofOfficeAPI.Models.LoginUser", null)
+                    b.HasOne("OutofOfficeWebApp.Server.Models.LoginIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -409,7 +435,7 @@ namespace OutofOfficeWebApp.Server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OutofOfficeAPI.Models.LoginUser", null)
+                    b.HasOne("OutofOfficeWebApp.Server.Models.LoginIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -418,22 +444,22 @@ namespace OutofOfficeWebApp.Server.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("OutofOfficeAPI.Models.LoginUser", null)
+                    b.HasOne("OutofOfficeWebApp.Server.Models.LoginIdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.ApprovalRequest", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.ApprovalRequest", b =>
                 {
-                    b.HasOne("OutofOfficeAPI.Models.Employee", "Employee")
+                    b.HasOne("OutofOfficeWebApp.Server.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("Approver")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OutofOfficeAPI.Models.LeaveRequest", "LeaveRequest")
+                    b.HasOne("OutofOfficeWebApp.Server.Models.LeaveRequest", "LeaveRequest")
                         .WithMany()
                         .HasForeignKey("LeaveRequestId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -444,9 +470,9 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.Navigation("LeaveRequest");
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.LeaveRequest", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.LeaveRequest", b =>
                 {
-                    b.HasOne("OutofOfficeAPI.Models.Employee", "Employee")
+                    b.HasOne("OutofOfficeWebApp.Server.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -455,9 +481,9 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.Navigation("Employee");
                 });
 
-            modelBuilder.Entity("OutofOfficeAPI.Models.Project", b =>
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.Project", b =>
                 {
-                    b.HasOne("OutofOfficeAPI.Models.Employee", "Employee")
+                    b.HasOne("OutofOfficeWebApp.Server.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("ProjectManager")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -468,13 +494,13 @@ namespace OutofOfficeWebApp.Server.Migrations
 
             modelBuilder.Entity("OutofOfficeWebApp.Server.Models.ProjectMember", b =>
                 {
-                    b.HasOne("OutofOfficeAPI.Models.Employee", "Employee")
+                    b.HasOne("OutofOfficeWebApp.Server.Models.Employee", "Employee")
                         .WithMany()
                         .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OutofOfficeAPI.Models.Project", "Project")
+                    b.HasOne("OutofOfficeWebApp.Server.Models.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -483,6 +509,17 @@ namespace OutofOfficeWebApp.Server.Migrations
                     b.Navigation("Employee");
 
                     b.Navigation("Project");
+                });
+
+            modelBuilder.Entity("OutofOfficeWebApp.Server.Models.SoftUser", b =>
+                {
+                    b.HasOne("OutofOfficeWebApp.Server.Models.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }
