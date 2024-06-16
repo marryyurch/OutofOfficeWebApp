@@ -1,33 +1,57 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OutofOfficeAPI.Data;
-using OutofOfficeAPI.Models;
+using OutofOfficeWebApp.Server.Contracts;
+using OutofOfficeWebApp.Server.Data;
 using OutofOfficeWebApp.Server.Models;
 using System.Linq.Expressions;
 
-namespace OutofOfficeAPI.Controllers
+namespace OutofOfficeWebApp.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class EmployeesController : ControllerBase
     {
         private readonly OutofOfficeDBContext _outofOfficeDbContext;
+
         public EmployeesController(OutofOfficeDBContext outofOfficeDBContext)
         {
             _outofOfficeDbContext = outofOfficeDBContext;
         }
 
         [HttpPost("add-emplpoyee")]
-        public async Task<IActionResult> AddEmployee([FromBody] Employee employee)
+        public async Task<IActionResult> AddEmployee([FromBody] AddEmployeeRequest request)
         {
-            _outofOfficeDbContext.Employees.Add(employee);
+            Employee newEmployee = new Employee()
+            {
+                Id = request.Id,
+                FullName = request.FullName,
+                SubdivisionType = request.Division,
+                PositionType = request.Position,
+                StatusType = request.Status,
+                PeoplePartner = request.partner,
+                OutofOfficeBalance = 0
+            };
+
+            _outofOfficeDbContext.Employees.Add(newEmployee);
+
+            _outofOfficeDbContext.SaveChanges();
+
+            // in client part invoke REGISTER method
+            SoftUser newUser = new SoftUser()
+            {
+                EmployeeId = newEmployee.Id,
+                Email = string.Concat(newEmployee.FullName.ToLower().Replace(" ", ""), "@outofoffice.ua")
+            };
+
+            _outofOfficeDbContext.SoftUsers.Add(newUser);
+
             await _outofOfficeDbContext.SaveChangesAsync();
 
-            return Ok(employee);
+            return Ok(newEmployee);
         }
 
         [HttpDelete("delete-employee")]
-        public async Task<IActionResult> DeleteEmployee(int id)
+        public async Task<IActionResult> DeleteEmployee([FromQuery] int id)
         {
             var employee = await _outofOfficeDbContext.Employees.FindAsync(id);
             if (employee == null) { return NotFound(); }
@@ -39,7 +63,7 @@ namespace OutofOfficeAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployee([FromQuery]string? search, string? sortItem, string? sortOrder)
+        public async Task<IActionResult> GetEmployee([FromQuery] string? search, string? sortItem, string? sortOrder)
         {
             var employeesQuery = _outofOfficeDbContext.Employees
                 .Where(e => string.IsNullOrWhiteSpace(search) ||
@@ -64,7 +88,7 @@ namespace OutofOfficeAPI.Controllers
         }
 
         [HttpGet("filter-employee")]
-        public async Task<IActionResult> FilterEmployee(string filterItem, string itemContent)
+        public async Task<IActionResult> FilterEmployee([FromQuery] string filterItem, string itemContent)
         {
             var employeesQuery = _outofOfficeDbContext.Employees;
 
@@ -84,15 +108,29 @@ namespace OutofOfficeAPI.Controllers
         }
 
         [HttpPost("update-employee")]
-        public async Task<IActionResult> UpdateEmployee(Employee employee)
+        public async Task<IActionResult> UpdateEmployee(AddEmployeeRequest request, float offBalance, string? photo)
         {
             //update and deactivate
+            var employee = await _outofOfficeDbContext.Employees.FindAsync(request.Id);
 
-            var employeesQuery = _outofOfficeDbContext.Employees;
+            if (employee == null)
+                return BadRequest("employee not found");
 
-            employeesQuery.Remove(employeesQuery.Where(e => e.Id == employee.Id).First());
+            var newEmployee = new Employee()
+            {
+                Id = request.Id,
+                FullName = request.FullName,
+                SubdivisionType = request.Division,
+                PositionType = request.Position,
+                StatusType = request.Status,
+                PeoplePartner = request.partner,
+                OutofOfficeBalance = offBalance,
+                Photo = photo
+            };
 
-            employeesQuery.Add(employee);
+            _outofOfficeDbContext.Employees.Remove(employee);
+
+            await _outofOfficeDbContext.Employees.AddAsync(newEmployee);
 
             await _outofOfficeDbContext.SaveChangesAsync();
 
@@ -100,7 +138,7 @@ namespace OutofOfficeAPI.Controllers
         }
 
         [HttpPost("add-employee-to-progect")]
-        public async Task<IActionResult> AddEmplToProject(int employeeId, int projectId)
+        public async Task<IActionResult> AddEmplToProject([FromQuery] int employeeId, int projectId)
         {
             var member = new ProjectMember()
             {
