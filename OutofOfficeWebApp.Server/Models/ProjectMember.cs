@@ -1,6 +1,4 @@
-﻿using OutofOfficeAPI.Models;
-
-namespace OutofOfficeWebApp.Server.Models
+﻿namespace OutofOfficeWebApp.Server.Models
 {
     public class ProjectMember
     {
