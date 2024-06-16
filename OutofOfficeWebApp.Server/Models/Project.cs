@@ -1,7 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using OutofOfficeWebApp.Server.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace OutofOfficeAPI.Models
+namespace OutofOfficeWebApp.Server.Models
 {
     public class Project
     {
@@ -13,7 +13,6 @@ namespace OutofOfficeAPI.Models
 
         public DateOnly EndDate { get; set; }
 
-        // Single choice from the “Employee” table with “Project Manager” position
         public int ProjectManager { get; set; }
 
         public string? Comment { get; set; }
@@ -22,12 +21,5 @@ namespace OutofOfficeAPI.Models
 
         [ForeignKey("ProjectManager")]
         public Employee Employee { get; set; }
-    }
-
-    public enum ProjectType
-    {
-        Research = 1,
-        Development = 2,
-        Testing = 3
     }
 }
