@@ -5,11 +5,6 @@ namespace OutofOfficeAPI.Models
 {
     public class LeaveRequest
     {
-        public LeaveRequest()
-        {
-            
-        }
-
         public int Id { get; set; }
 
         public int EmployeeId { get; set; }
