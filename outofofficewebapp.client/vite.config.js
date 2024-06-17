@@ -51,15 +51,23 @@ export default defineConfig({
                 target,
                 secure: false
             },
-            '^/register': {
-                target,
-                secure: false
-            },
             '^/logout': {
                 target,
                 secure: false
             },
-            '^/login': {
+            '^/api/ApprovalRequests': {
+                target,
+                secure: false
+            },
+            '^/api/LeaveRequests': {
+                target,
+                secure: false
+            },
+            '^/api/Employees': {
+                target,
+                secure: false
+            },
+            '^/api/Projects': {
                 target,
                 secure: false
             },
