@@ -153,5 +153,23 @@ namespace OutofOfficeWebApp.Server.Controllers
 
             return Ok("Done");
         }
+
+        [HttpGet("check-employee-role")]
+        public async Task<IActionResult> GetEmpRole([FromQuery] string email)
+        {
+            var softUser = await _outofOfficeDbContext.SoftUsers.Where(u => u.Email == email).FirstAsync();
+
+            var employee = await _outofOfficeDbContext.Employees.FindAsync(softUser.EmployeeId);
+            string role = string.Empty;
+
+            if (employee.SubdivisionType == Enums.SubdivisionType.HR && employee.PositionType == Enums.PositionType.Manager)
+                role = "hr";
+            else if (employee.SubdivisionType == Enums.SubdivisionType.Development && employee.PositionType == Enums.PositionType.Manager)
+                role = "pm";
+            else
+                role = "emp";
+
+            return Ok(role);
+        }
     }
 }
