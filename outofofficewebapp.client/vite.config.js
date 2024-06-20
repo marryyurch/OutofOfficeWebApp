@@ -55,6 +55,14 @@ export default defineConfig({
                 target,
                 secure: false
             },
+            '^/register': {
+                target: 'https://localhost:7120',
+                secure: false
+            },
+            '^/login': {
+                target: 'https://localhost:7120',
+                secure: false
+            },
             '^/api/ApprovalRequests': {
                 target,
                 secure: false
@@ -64,7 +72,7 @@ export default defineConfig({
                 secure: false
             },
             '^/api/Employees': {
-                target,
+                target: 'https://localhost:7120',
                 secure: false
             },
             '^/api/Projects': {
