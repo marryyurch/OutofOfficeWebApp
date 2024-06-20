@@ -6,6 +6,16 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:5173/");
+        policy.AllowAnyHeader();
+        policy.AllowAnyMethod();
+    });
+});
+
 var connectionString = builder.Configuration.GetConnectionString("OutofOfficeDBConnectionString");
 builder.Services.AddDbContext<OutofOfficeDBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
@@ -28,18 +38,17 @@ app.MapIdentityApi<LoginIdentityUser>();
 
 app.MapPost("/logout", async (SignInManager<LoginIdentityUser> signInManager) =>
 {
-
     await signInManager.SignOutAsync();
     return Results.Ok();
 
-});//.RequireAuthorization();
+}).RequireAuthorization();
 
 
 app.MapGet("/pingauth", (ClaimsPrincipal user) =>
 {
     var email = user.FindFirstValue(ClaimTypes.Email); // get the user's email from the claim
     return Results.Json(new { Email = email }); ; // return the email as a plain text response
-});//.RequireAuthorization();
+}).RequireAuthorization();
 
 if (app.Environment.IsDevelopment())
 {
@@ -50,6 +59,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllers();
 
