@@ -7,6 +7,7 @@ import Start from './Pages/Start.jsx';
 import Login from './Pages/Login.jsx';
 import Register from './Pages/Register.jsx';
 import RegisterHR from './Pages/RegisterHR.jsx';
+import Lists from './Pages/Lists.jsx';
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/registerHR" element={<RegisterHR />} />
                 <Route path="/home" element={<Home />} />
+                <Route path="/lists" element={<Lists />} />
             </Routes>
         </BrowserRouter>
     );
