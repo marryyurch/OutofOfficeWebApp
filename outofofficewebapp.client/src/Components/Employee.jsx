@@ -4,7 +4,7 @@ import { Table, TableContainer, Tbody, Thead, Tr, Th, Td } from "@chakra-ui/reac
 export default function Employee({ id, fullName, division, position, status, partner, balance}) {
     return (
         <TableContainer>
-        <Table variant={"striped"}>
+            <Table variant={"striped"} size='sm'>
             <Thead>
                 <Tr>
                     <Th isNumeric>Id</Th>
@@ -17,7 +17,6 @@ export default function Employee({ id, fullName, division, position, status, par
                 </Tr>
             </Thead>
             <Tbody>
-                <Tr>
                     <Td isNumeric>{id}</Td>
                     <Td>{fullName}</Td>
                     <Td>{division}</Td>
@@ -25,7 +24,6 @@ export default function Employee({ id, fullName, division, position, status, par
                     <Td>{status}</Td>
                     <Td isNumeric>{partner}</Td>
                     <Td isNumeric>{balance}</Td>
-                </Tr>
             </Tbody>
         </Table>
         </TableContainer>

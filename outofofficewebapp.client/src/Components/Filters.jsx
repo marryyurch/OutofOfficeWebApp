@@ -7,7 +7,7 @@ export default function Filters({filter, setFilter}){
             placefolder="Search" 
             onChange={(e) => setFilter({...filter, search: e.target.value})} 
         />
-        <Select onChange={(e) => setFilters({...filter, sortOrder: e.target.value})}>
+        <Select onChange={(e) => setFilter({...filter, sortOrder: e.target.value})}>
             <option value={"desc"}>Last-added employees</option>
 			<option value={"asc"}>First-added employees</option>
         </Select>

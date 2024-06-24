@@ -1,7 +1,7 @@
 import React, { useState, useEffect, createContext } from 'react';
 import { Navigate } from 'react-router-dom';
-import PropTypes from 'prop-types'; 
-import axios from "axios";
+
+import { fetchRole } from "../services/role.js";
 
 const UserContext = createContext({});
 
@@ -67,10 +67,6 @@ function AuthorizeView(props) {
     }
 }
 
-AuthorizeView.propTypes = {
-    children: PropTypes.node // Define the type for children
-};
-
 export function AuthorizedUser(props) {
     const user = React.useContext(UserContext);
     if (props.value === "email") {
@@ -80,23 +76,25 @@ export function AuthorizedUser(props) {
     }
 }
 
-export async function CheckUserRole(props) {
+export function UserRole({ onRoleFetched }) {
     const user = React.useContext(UserContext);
-    if (props.value === "email") {
-        var response = await axios.get("http://localhost:5283/api/employee/check-employee-role", { params: user.email });
-        return <>{ response.data}</>
-    }
-    else {
-        return <></>;
-    }
+    const [role, setRole] = useState("");
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (user && user.email) {
+                let roleData = await fetchRole(user.email);
+                setRole(roleData);
+                if (onRoleFetched){
+                    onRoleFetched(roleData);
+                }
+            }
+        };
+
+        fetchData();
+    }, [user, onRoleFetched]);
+
+    return null;
 }
-
-CheckUserRole.propTypes = {
-    children: PropTypes.node // Define the type for children
-};
-
-AuthorizedUser.propTypes = {
-    value: PropTypes.string.isRequired // Define the type for value
-};
 
 export default AuthorizeView;
