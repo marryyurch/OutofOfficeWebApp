@@ -14,10 +14,13 @@ function Home() {
         <AuthorizeView>
         <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Heading>OutOfOffice</Heading>
-            <Button colorScheme="teal" size="md" onClick={handleListsClick}>Lists</Button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <Button colorScheme="teal" onClick={handleListsClick} variant='outline'>Lists</Button>
             <LogoutLink>
-                <Text align="right" fontSize="lg">Logout <AuthorizedUser value="email" /></Text>
+                <Text fontSize="lg">Logout <AuthorizedUser value="email" /></Text>
             </LogoutLink>
+            </div>
+            
         </header>
             <Text fontSize='4xl' align="center" mt={{ base: 8, md: 16 }}>Welcome Home</Text>
         </AuthorizeView>

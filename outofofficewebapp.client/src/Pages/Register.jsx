@@ -3,31 +3,27 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Register() {
-    // state variables for email and passwords
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const navigate = useNavigate();
-
-    // state variable for error messages
+    
     const [error, setError] = useState("");
 
     const handleLoginClick = () => {
         navigate("/login");
     }
-
-    // handle change events for input fields
+    
     const handleChange = (e) => {
         const { name, value } = e.target;
         if (name === "email") setEmail(value);
         if (name === "password") setPassword(value);
         if (name === "confirmPassword") setConfirmPassword(value);
     };
-
-    // handle submit event for the form
+    
     const handleSubmit = (e) => {
-        e.preventDefault();
-        // validate email and passwords
+        e.preventDefault
+
         if (!email || !password || !confirmPassword) {
             setError("Please fill in all fields.");
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -35,9 +31,9 @@ function Register() {
         } else if (password !== confirmPassword) {
             setError("Passwords do not match.");
         } else {
-            // clear error message
+            
             setError("");
-            // post data to the /register api
+            
             fetch("/register", {
                 method: "POST",
                 headers: {
@@ -50,7 +46,7 @@ function Register() {
             })
                 .then((response) => response.json())
                 .then((data) => {
-                    // handle success or error from the server
+                    
                     console.log(data);
                     if (data.ok)
                         setError("Successful register.");
@@ -58,7 +54,7 @@ function Register() {
                         setError("Error registering.");
                 })
                 .catch((error) => {
-                    // handle network error
+                    
                     console.error(error);
                     setError("Error registering.");
                 });
