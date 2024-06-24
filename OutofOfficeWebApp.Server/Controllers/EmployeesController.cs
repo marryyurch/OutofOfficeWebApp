@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OutofOfficeWebApp.Server.Contracts;
 using OutofOfficeWebApp.Server.Data;
+using OutofOfficeWebApp.Server.Enums;
 using OutofOfficeWebApp.Server.Models;
 using System.Linq.Expressions;
 
@@ -18,37 +19,37 @@ namespace OutofOfficeWebApp.Server.Controllers
             _outofOfficeDbContext = outofOfficeDBContext;
         }
 
-        [HttpPost("add-emplpoyee")]
-        public async Task<IActionResult> AddEmployee([FromBody] AddEmployeeRequest request)
-        {
-            Employee newEmployee = new Employee()
-            {
-                Id = request.Id,
-                FullName = request.FullName,
-                SubdivisionType = request.Division,
-                PositionType = request.Position,
-                StatusType = request.Status,
-                PeoplePartner = request.partner,
-                OutofOfficeBalance = 0
-            };
+        [HttpPost("add-employee")]
+public async Task<IActionResult> AddEmployee([FromBody] AddEmployeeRequest request)
+{
+    Employee newEmployee = new Employee()
+    {
+        Id = request.Id,
+        FullName = request.FullName,
+        SubdivisionType = request.Division,
+        PositionType = request.Position,
+        StatusType = request.Status,
+        PeoplePartner = request.partner,
+        OutofOfficeBalance = 0
+    };
 
-            _outofOfficeDbContext.Employees.Add(newEmployee);
+    _outofOfficeDbContext.Employees.Add(newEmployee);
 
-            _outofOfficeDbContext.SaveChanges();
+    _outofOfficeDbContext.SaveChanges();
 
-            // in client part invoke REGISTER method
-            SoftUser newUser = new SoftUser()
-            {
-                EmployeeId = newEmployee.Id,
-                Email = string.Concat(newEmployee.FullName.ToLower().Replace(" ", ""), "@outofoffice.ua")
-            };
+    SoftUser newUser = new SoftUser()
+    {
+        EmployeeId = newEmployee.Id,
+        Email = string.Concat(newEmployee.FullName.ToLower().Replace(" ", ""), "@outofoffice.ua")
+    };
 
-            _outofOfficeDbContext.SoftUsers.Add(newUser);
+    _outofOfficeDbContext.SoftUsers.Add(newUser);
 
-            await _outofOfficeDbContext.SaveChangesAsync();
+    await _outofOfficeDbContext.SaveChangesAsync();
 
-            return Ok(newEmployee);
-        }
+    return Ok(newEmployee);
+}
+
 
         [HttpDelete("delete-employee")]
         public async Task<IActionResult> DeleteEmployee([FromQuery] int id)
@@ -90,22 +91,48 @@ namespace OutofOfficeWebApp.Server.Controllers
         [HttpGet("filter-employee")]
         public async Task<IActionResult> FilterEmployee([FromQuery] string filterItem, string itemContent)
         {
-            var employeesQuery = _outofOfficeDbContext.Employees;
+            IQueryable<Employee> employeesQuery = _outofOfficeDbContext.Employees;
 
-            await employeesQuery.ToListAsync();
-
-            var employees = filterItem.ToLower() switch
+            if (!string.IsNullOrEmpty(filterItem) && !string.IsNullOrEmpty(itemContent))
             {
-                "name" => employeesQuery.Where(e => e.FullName == itemContent),
-                "subdivision" => employeesQuery.Where(e => (int)e.SubdivisionType == int.Parse(itemContent)),
-                "position" => employeesQuery.Where(e => (int)e.PositionType == int.Parse(itemContent)),
-                "status" => employeesQuery.Where(e => (int)e.StatusType == int.Parse(itemContent)),
-                "ppartner" => employeesQuery.Where(e => e.PeoplePartner == int.Parse(itemContent)),
-                _ => employeesQuery
-            };
+                switch (filterItem.ToLower())
+                {
+                    case "name":
+                        employeesQuery = employeesQuery.Where(e => e.FullName == itemContent);
+                        break;
+                    case "subdivision":
+                        if (Enum.TryParse<SubdivisionType>(itemContent, out var subdivisionType))
+                        {
+                            employeesQuery = employeesQuery.Where(e => e.SubdivisionType == subdivisionType);
+                        }
+                        break;
+                    case "position":
+                        if (Enum.TryParse<PositionType>(itemContent, out var positionType))
+                        {
+                            employeesQuery = employeesQuery.Where(e => e.PositionType == positionType);
+                        }
+                        break;
+                    case "status":
+                        if (Enum.TryParse<StatusType>(itemContent, out var statusType))
+                        {
+                            employeesQuery = employeesQuery.Where(e => e.StatusType == statusType);
+                        }
+                        break;
+                    case "ppartner":
+                        if (int.TryParse(itemContent, out var pPartnerId))
+                        {
+                            employeesQuery = employeesQuery.Where(e => e.PeoplePartner == pPartnerId);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-            return Ok(employees);
+            return Ok(await employeesQuery.ToListAsync());
         }
+
+
 
         [HttpPost("update-employee")]
         public async Task<IActionResult> UpdateEmployee(AddEmployeeRequest request, float offBalance, string? photo)
