@@ -86,3 +86,17 @@ export const addEmployee = async (employeeData) => {
     }
 };
 
+export const addEmployeeToProject = async (employeeId, projectId) => {
+    try {
+        const response = await axios.post('https://localhost:5173/api/Employees/add-employee-to-progect', null, {
+            params: {
+                employeeId: employeeId,
+                projectId: projectId
+            }
+        });
+        console.log('Server response:', response.data);
+        return response.data;
+    } catch (error) {
+        console.error("Error adding employee to project:", error);
+    }
+};
