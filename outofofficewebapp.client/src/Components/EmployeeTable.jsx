@@ -3,7 +3,7 @@ import { Box, VStack, HStack, FormControl, FormLabel, Input, Select, Button, Tab
 import { MdDelete, MdEdit, MdAdd } from "react-icons/md";
 import Filters from './Filters';
 import { fetchEmployees, fetchAllEmployees, deleteEmployee, filterEmployees, addEmployeeToProject } from '../services/employees.js';
-import { fetchProjects } from "../services/projects";
+import { fetchProjectsToListInModal } from "../services/projects";
 import EditEmployeeModal from '../Modals/EditEmployeeModal';
 import AddEmployeeModal from '../Modals/AddEmployeeModal';
 import AssignProjectModal from '../Modals/AssignProjectModal';
@@ -46,7 +46,7 @@ const EmployeeTable = ({ role }) => {
             setEmployees(employeesData);
             const allEmployeesData = await fetchAllEmployees();
             setAllEmployees(allEmployeesData);
-            const projectsData = await fetchProjects();
+            const projectsData = await fetchProjectsToListInModal();
             setProjects(projectsData);
         };
 

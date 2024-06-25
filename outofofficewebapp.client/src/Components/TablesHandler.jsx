@@ -1,5 +1,8 @@
 import { Text, Tab, Tabs, TabList, TabPanel, TabPanels, Box, Center } from "@chakra-ui/react";
-import EmployeeTable from './EmployeeTable';
+import EmployeeTable from "./EmployeeTable";
+import LeaveRequestsTable from "../Components/LeaveRequestsTable";
+import ApprovalRequestsTable from "../Components/ApprovalRequestsTable";
+import ProjectsTable from "../Components/ProjectsTable";
 
 export default function TablesHandler({ role }) {
     return (
@@ -12,7 +15,7 @@ export default function TablesHandler({ role }) {
                     </TabList>
                     <TabPanels>
                         <TabPanel>
-                            <Center><p>leave!!</p></Center>
+                            <LeaveRequestsTable role={role} />
                         </TabPanel>
                         <TabPanel>
                             <Center><p>projects!!</p></Center>
@@ -33,13 +36,13 @@ export default function TablesHandler({ role }) {
                             <EmployeeTable role={role} />
                         </TabPanel>
                         <TabPanel>
-                            <Center><p>approval!!</p></Center>
+                            <ApprovalRequestsTable role={role} />
                         </TabPanel>
                         <TabPanel>
-                            <Center><p>leave!!</p></Center>
+                            <LeaveRequestsTable role={role} />
                         </TabPanel>
                         <TabPanel>
-                            <Center><p>projects!!</p></Center>
+                            <ProjectsTable role={role} />
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
@@ -57,13 +60,13 @@ export default function TablesHandler({ role }) {
                             <EmployeeTable role={role} />
                         </TabPanel>
                         <TabPanel>
-                            <Center><p>approval!!</p></Center>
+                            <ApprovalRequestsTable role={role} />
                         </TabPanel>
                         <TabPanel>
-                            <Center><p>leave!!</p></Center>
+                            <LeaveRequestsTable role={role} />
                         </TabPanel>
                         <TabPanel>
-                            <Center><p>projects!!</p></Center>
+                            <ProjectsTable role={role} />
                         </TabPanel>
                     </TabPanels>
                 </Tabs>
