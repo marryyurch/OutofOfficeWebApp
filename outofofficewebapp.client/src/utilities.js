@@ -31,3 +31,24 @@ export const getEmployeeNameById = (id, employees) => {
 export const getRowColor = (status) => {
     return status === 1 ? 'green.100' : 'gray.100';
 };
+
+export const getAbsenceReasonType = (value) => {
+    const types = {
+        0: "Vacation",
+        1: "Sick Leave",
+        2: "Personal Leave",
+        3: "Other"
+    };
+    return types[value] || "Unknown";
+};
+
+export const getRequestStatusType = (value) => {
+    const types = {
+        0: "New",
+        1: "Submitted",
+        2: "Approved",
+        3: "Rejected",
+        4: "Canceled"
+    };
+    return types[value] || "Unknown";
+};
