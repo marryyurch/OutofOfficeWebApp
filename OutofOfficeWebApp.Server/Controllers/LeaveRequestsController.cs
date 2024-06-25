@@ -39,7 +39,7 @@ namespace OutofOfficeWebApp.Server.Controllers
             return Ok(leaveRequest);
         }
 
-        [HttpDelete("delete-leave-reuest")]
+        [HttpDelete("delete-leave-reqest")]
         public async Task<IActionResult> DeleteLeaveRequest([FromQuery] int id)
         {
             var leaveRequest = await _outofOfficeDbContext.LeaveRequests.FindAsync(id);
@@ -76,23 +76,44 @@ namespace OutofOfficeWebApp.Server.Controllers
         }
 
         [HttpGet("filter-leave-request")]
-        public async Task<IActionResult> FilterLeaveRequest([FromQuery] string filterItem, string itemContent)
+        public async Task<IActionResult> FilterLeaveRequest([FromQuery] string filterItem, [FromQuery] string itemContent)
         {
-            var requestQuery = _outofOfficeDbContext.LeaveRequests;
+            var requestQuery = _outofOfficeDbContext.LeaveRequests.AsQueryable();
 
-            await requestQuery.ToListAsync();
-
-            var requests = filterItem.ToLower() switch
+            if (!string.IsNullOrEmpty(filterItem) && !string.IsNullOrEmpty(itemContent))
             {
-                "approver" => requestQuery.Where(r => r.EmployeeId == int.Parse(itemContent)),
-                "reason" => requestQuery.Where(r => (int)r.AbsenceReasonType == int.Parse(itemContent)),
-                "status" => requestQuery.Where(r => (int)r.RequestStatusType == int.Parse(itemContent)),
-                "comment" => requestQuery.Where(r => r.Comment.Contains(itemContent)),
-                _ => requestQuery
-            };
+                switch (filterItem.ToLower())
+                {
+                    case "approver":
+                        if (int.TryParse(itemContent, out int employeeId))
+                        {
+                            requestQuery = requestQuery.Where(r => r.EmployeeId == employeeId);
+                        }
+                        break;
+                    case "reason":
+                        if (Enum.TryParse(typeof(AbsenceReasonType), itemContent, out var reasonType))
+                        {
+                            requestQuery = requestQuery.Where(r => r.AbsenceReasonType == (AbsenceReasonType)reasonType);
+                        }
+                        break;
+                    case "status":
+                        if (Enum.TryParse(typeof(RequestStatusType), itemContent, out var statusType))
+                        {
+                            requestQuery = requestQuery.Where(r => r.RequestStatusType == (RequestStatusType)statusType);
+                        }
+                        break;
+                    case "comment":
+                        requestQuery = requestQuery.Where(r => r.Comment.Contains(itemContent));
+                        break;
+                    default:
+                        break;
+                }
+            }
 
-            return Ok(requests);
+            return Ok(await requestQuery.ToListAsync());
         }
+
+
 
         [HttpPost("update-leave-request")]
         public async Task<IActionResult> UpdateEmployee([FromBody] CreateLeaveRequest request)
